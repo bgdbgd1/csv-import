@@ -1,0 +1,4 @@
+id,customer_id,amount,created_at
+1,cust-01,99.99,2026-11-01
+2,cust-02,149.00,2026-11-02
+3,cust-01,49.50,2026-11-03

@@ -1,0 +1,50 @@
+# Application database running inside the kind cluster.
+#
+# Job pods connect via Kubernetes DNS:
+#   postgresql://app:app@app-db.default.svc.cluster.local:5432/app
+#
+# To inspect data from your machine:
+#   kubectl port-forward svc/app-db 5433:5432
+#   psql postgresql://app:app@localhost:5433/app
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-db
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app-db
+  template:
+    metadata:
+      labels:
+        app: app-db
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:16
+          env:
+            - name: POSTGRES_USER
+              value: app
+            - name: POSTGRES_PASSWORD
+              value: app
+            - name: POSTGRES_DB
+              value: app
+          ports:
+            - containerPort: 5432
+---
+# A ClusterIP Service gives pods a stable DNS name to reach the database.
+# Without this, pods would have to know the app-db pod's IP, which changes on restarts.
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-db
+  namespace: default
+spec:
+  selector:
+    app: app-db
+  ports:
+    - port: 5432
+      targetPort: 5432

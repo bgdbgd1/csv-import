@@ -1,0 +1,5 @@
+__pycache__/
+*.pyc
+.venv/
+k8s/kind-config.yaml   # generated per-machine, contains absolute host paths
+k8s/kubeconfig.yaml    # generated per-machine, contains cluster credentials
